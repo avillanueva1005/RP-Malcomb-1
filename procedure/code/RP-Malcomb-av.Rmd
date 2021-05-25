@@ -499,11 +499,11 @@ new_vuln_map
 
 ```{r comparing my Figure 4 and Malcomb et al.'s Fig. 4}
 or_fig4 = # load original figure 4 data
-  read_sf(here("data", "derived", "public", "ta_resilience_newnew.shp")) %>% 
+  read_sf(here("data", "derived", "public", "taresilience.shp")) %>% 
   # load ta_resilience layer from georeferencing geopackage
   st_drop_geometry() %>%
   # remove the geometry data because two geometries cannot be joined
-  select(c(ID_2, NEW_resil)) %>%  
+  select(c(ID_2, resilence)) %>%  
   # select only the ID_2 and resilience columns
   na.omit()
   # remove records with null values
@@ -523,13 +523,13 @@ rp_fig4 = ta_2010 %>% # prepare our reproduction of figure 4 data
 #ta_brks was the result of a Jenks classification, as noted on Malcomb et al's maps
 fig4compare = inner_join(rp_fig4,or_fig4,by="ID_2") %>%  
   #inner join on field ID_2 keeps only matching records
-  filter(rp_res>0 & rp_res<5 & NEW_resil > 0 & NEW_resil < 5)
+  filter(rp_res>0 & rp_res<5 & resilence > 0 & resilence < 5)
   # keep only records with valid resilience scores
-table(fig4compare$NEW_resil,fig4compare$rp_res)
+table(fig4compare$resilence,fig4compare$rp_res)
 # crosstabulation with frequencies
-cor.test(fig4compare$NEW_resil,fig4compare$rp_res,method="spearman", exact=FALSE)
+cor.test(fig4compare$resilence,fig4compare$rp_res,method="spearman", exact=FALSE)
 # Spearman's Rho correlation test
-fig4compare = mutate(fig4compare, difference = rp_res - NEW_resil) 
+fig4compare = mutate(fig4compare, difference = rp_res - resilence) 
 # Calculate difference between the maps so that you can create a difference
 ```
 
@@ -577,14 +577,14 @@ fig4_diff_map
 
 ```{r comparing my Figure 5 and Malcomb et al.'s Fig. 5}
 orfig5vect = 
-  read_sf(here("data", "derived", "public", "georeferencing_vulnerability_grid.shp"))
+  read_sf(here("data", "derived", "public", "georefvulngrid.shp"))
 # load original figure 5 data
-orfig5rast = st_rasterize(orfig5vect["X_mean"], template=ta_final_full)
+orfig5rast = st_rasterize(orfig5vect["rmean"], template=ta_final_full)
 # convert mean of blue values into a raster using ta_final_full as a reference for raster
 # extent, cell size, CRS, etc.
 orfig5rast = orfig5rast %>% 
   mutate(or = 1-
-           (X_mean - min(orfig5rast[[1]], na.rm= TRUE)) /
+           (rmean - min(orfig5rast[[1]], na.rm= TRUE)) /
            (max(orfig5rast[[1]], na.rm= TRUE) -
             min(orfig5rast[[1]], na.rm= TRUE)
         )
@@ -697,6 +697,6 @@ write_stars(ta_final, here("data","derived","public","ta_capacity.tif"))
 
 write_sf(ta_2010, results, "ta_2010")
 
-write_sf(lhz, results, "lhz")
+write_sf(lhz_quin, results, "lhz")
 ```
 
