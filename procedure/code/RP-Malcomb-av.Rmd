@@ -559,10 +559,10 @@ fig4_diff_map = ggplot() +
                "National Parks and Reserves",
                "Major Lakes of Malawi"),
     values = c(
-      "-2" = "#feebe2",
-      "-1" = "#fbb4b9",
-      "0" = "#f768a1",
-      "1" = "#ae017e",
+      "-2" = "#F1D8FF",
+      "-1" = "#B890CD",
+      "0" = "#8338AB",
+      "1" = "#35084D",
       "Missing Data" = "#696969",
       "National Parks and Reserves" = "#74c476",
       "Major Lakes of Malawi" = "lightblue"
@@ -604,7 +604,7 @@ fig5comp = fig5comp %>% mutate( diff = rp - or )
 # for purposes of mapping
 fig5comppts = st_as_sf(fig5comp)
 # convert raster to vector points to simplify plotting and correlation testing
-plot(fig5comppts$or, fig5comppts$rp, xlab="Original Study", ylab="Reproduction")
+diff <- plot(fig5comppts$or, fig5comppts$rp, xlab="Original Study", ylab="Reproduction")
 # create scatterplot of original results and reproduction results
 cor.test(fig5comppts$or, fig5comppts$rp, method="spearman", exact=FALSE)
 # Spearman's Rho correlation test
@@ -686,6 +686,13 @@ ggsave(
   plot = fig5_diff_map,
   width = 8.5,
   height = 11,
+  units = "in"
+)
+ggsave(
+  here("results", "maps", "diff.png"),
+  plot = diff,
+  width = 11,
+  height = 8.5,
   units = "in"
 )
 ```
